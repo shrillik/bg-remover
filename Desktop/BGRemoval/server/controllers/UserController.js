@@ -7,18 +7,18 @@ const clerkWebhooks= async(req,res)=>{
         const whook= new Webhook(process.env.CLERK_WEBHOOK_SECRET)
 
         await whook.verify(JSON.stringify(req.body),{
-            'svix-id':req.headers['svix-id'],
-            'svix-timestamp':req.headers['svix-timestamp'],
-            'svix-signature':req.headers['svix-signature']
+            "svix-id":req.headers["svix-id"],
+            "svix-timestamp":req.headers["svix-timestamp"],
+            "svix-signature":req.headers["svix-signature"]
         })
 
         const {data, type} = req.body
 
         switch (type) {
-            case 'user.created': {
+            case "user.created": {
                 const userData={
                     clerkId:data.id,
-                    email:data.email_adresses[0].email_adresses,
+                    email:data.email_addresses[0].email_address,
                     firstName: data.first_name,
                     lastName: data.last_name,
                     photo: data.image_url
@@ -28,7 +28,7 @@ const clerkWebhooks= async(req,res)=>{
                 break;
             }
 
-            case 'user.updated': {
+            case "user.updated": {
                  const userData={
                     email:data.email_adresses[0].email_adresses,
                     firstName: data.first_name,
@@ -40,7 +40,7 @@ const clerkWebhooks= async(req,res)=>{
                 break;
             }
 
-            case 'user.deleted': {
+            case "user.deleted": {
                 await userModel.findOneAndDelete({clerkId:data.id})
                 res.json({})
                 break;
